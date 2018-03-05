@@ -8,7 +8,8 @@ Param(
     [Parameter()]
     [ValidateScript({ Test-Path -Path $_ -PathType Leaf})]
     [ValidatePattern( '\.parameters.json$')]
-    [string]$ParametersFile
+    [string]$ParametersFile,
+    [bool]$Complete
 )
 
 #$ResourceGroupName = (-join ((48..57) + (97..122) | Get-Random -Count 8 | % {[char]$_}))
@@ -30,7 +31,8 @@ write-output "`n
 $STARTCREATERG = (get-date -displayhint Time)
 write-output "`nCreating Azure Resource Group..."
 
-New-AzureRmResourceGroup -Location $Location -Name $ResourceGroupName 
+$createrg = (New-AzureRmResourceGroup -Location $Location -Name $ResourceGroupName)
+if ($Complete) { write-output $createrg }
 
 $ENDCREATERG = (get-date -displayhint Time)
 
@@ -52,17 +54,15 @@ write-output "`n
 $STARTDEPLOYMENTCREATE = (get-date -displayhint Time)
 write-output "`nStarting deployment from template files provided...`n"
 
-New-AzureRmResourceGroupDeployment `
--TemplateFile $TemplateFile `
--TemplateParameterFile $ParametersFile `
--Name $ResourceGroupName-testframeworkdeployment `
--ResourceGroupName $ResourceGroupName 
+$createdep = (New-AzureRmResourceGroupDeployment -TemplateFile $TemplateFile -TemplateParameterFile $ParametersFile -Name $ResourceGroupName-testframeworkdeployment -ResourceGroupName $ResourceGroupName)
+if ($Complete) { write-output $createdep }
 
 $ENDDEPLOYMENTCREATE = (get-date -displayhint Time)
 
-write-output "`nCapturing details of the deployment operations:"
+if ($Complete) { write-output "`nCapturing details of the deployment operations:" }
 
-(Get-AzureRmResourceGroupDeploymentOperation -ResourceGroupName $ResourceGroupName -DeploymentName $ResourceGroupName-testframeworkdeployment).Properties | select-object provisioningoperation,duration,targetresource | Format-list
+$getops = ((Get-AzureRmResourceGroupDeploymentOperation -ResourceGroupName $ResourceGroupName -DeploymentName $ResourceGroupName-testframeworkdeployment).Properties | select-object provisioningoperation,duration,targetresource | Format-list)
+if ($Complete) { write-output $getops }
 
 $TSDEPLOYMENT = ([datetime]"$ENDDEPLOYMENTCREATE" -[datetime]"$STARTDEPLOYMENTCREATE")
 "The time taken to complete the template deployment '$ResourceGroupName-testframeworkdeployment': {0:c}" -f $TSDEPLOYMENT
@@ -84,7 +84,8 @@ $vmssName = (get-azurermvmss -ResourceGroupName $ResourceGroupName).Name
 $vmss = (get-azurermvmss -ResourceGroupName $ResourceGroupName -VMScaleSetName $vmssName)
 $vmss.sku.capacity = 0
 
-Update-AzureRmVmss -ResourceGroupName $ResourceGroupName -Name vmss -VirtualMachineScaleSet $vmss | out-null
+$deprov = (Update-AzureRmVmss -ResourceGroupName $ResourceGroupName -Name vmss -VirtualMachineScaleSet $vmss)
+if ($Complete) { write-output $deprov }
 
 $ENDDEPROVISIONVMSS = (get-date -displayhint Time)
 write-output "Deprovisioning completed: $vmssName`n" 

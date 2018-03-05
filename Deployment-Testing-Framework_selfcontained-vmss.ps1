@@ -1,3 +1,7 @@
+Param(
+[bool]$Complete
+)
+
 if ( (test-path -path azuredeploy.json) -and (test-path -path *parameters.json) )
 {
 $RNDNAME = (-join ((48..57) + (97..122) | Get-Random -Count 8 | % {[char]$_}))
@@ -24,7 +28,8 @@ write-output "`n
 $STARTCREATERG = (get-date -displayhint Time)
 write-output "`nCreating Azure Resource Group..."
 
-New-AzureRmResourceGroup -Location $LOCATION -Name $RNDNAME-rg 
+$createrg = (New-AzureRmResourceGroup -Location $LOCATION -Name $RNDNAME-rg)
+if ($Complete) { write-output $createrg }
 
 $ENDCREATERG = (get-date -displayhint Time)
 
@@ -46,17 +51,15 @@ write-output "`n
 $STARTDEPLOYMENTCREATE = (get-date -displayhint Time)
 write-output "`nStarting deployment from template files provided...`n"
 
-New-AzureRmResourceGroupDeployment `
--TemplateFile ./azuredeploy.json `
--TemplateParameterFile ./azuredeploy.parameters.json `
--Name $RNDNAME-deployment `
--ResourceGroupName $RNDNAME-rg 
+$createdep = (New-AzureRmResourceGroupDeployment -TemplateFile ./azuredeploy.json -TemplateParameterFile ./azuredeploy.parameters.json -Name $RNDNAME-testframeworkdeployment -ResourceGroupName $RNDNAME-rg)
+if ($Complete) { write-output $createdep }
 
 $ENDDEPLOYMENTCREATE = (get-date -displayhint Time)
 
-write-output "`nCapturing details of the deployment operations:"
+if ($Complete) { write-output "`nCapturing details of the deployment operations:" }
 
-(Get-AzureRmResourceGroupDeploymentOperation -ResourceGroupName $RNDNAME-rg -DeploymentName $RNDNAME-deployment).Properties | select-object provisioningoperation,duration,targetresource | Format-list
+$getops = ((Get-AzureRmResourceGroupDeploymentOperation -ResourceGroupName $RNDNAME-rg -DeploymentName $RNDNAME-testframeworkdeployment).Properties | select-object provisioningoperation,duration,targetresource | Format-list)
+if ($Complete) { write-output $getops }
 
 $TSDEPLOYMENT = ([datetime]"$ENDDEPLOYMENTCREATE" -[datetime]"$STARTDEPLOYMENTCREATE")
 "The time taken to complete the template deployment '$RNDNAME-deployment': {0:c}" -f $TSDEPLOYMENT
@@ -78,7 +81,8 @@ $vmssName = (get-azurermvmss -ResourceGroupName $RNDNAME-rg).Name
 $vmss = (get-azurermvmss -ResourceGroupName $RNDNAME-rg -VMScaleSetName $vmssName)
 $vmss.sku.capacity = 0
 
-Update-AzureRmVmss -ResourceGroupName $RNDNAME-rg -Name vmss -VirtualMachineScaleSet $vmss | out-null
+$deprov = (Update-AzureRmVmss -ResourceGroupName $RNDNAME-rg -Name vmss -VirtualMachineScaleSet $vmss)
+if ($Complete) { write-output $deprov }
 
 $ENDDEPROVISIONVMSS = (get-date -displayhint Time)
 write-output "Deprovisioning completed: $vmssName`n" 
@@ -108,7 +112,7 @@ $ENDDELETERG = (get-date -displayhint Time)
 $TSDELETERG = ([datetime]"$ENDDELETERG" -[datetime]"$STARTDELETERG")
 "`nThe time taken to delete the Resource Group $RNDNAME-rg: {0:c}" -f $TSDELETERG
 
-echo "`n"
+write-output "`n"
 
 }
 
@@ -119,6 +123,6 @@ delete-rg
 
 Stop-Transcript
 
-echo "`n"
+write-output "`n"
 
 }
