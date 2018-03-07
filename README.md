@@ -19,7 +19,7 @@ There is a dependency of having an azuredeploy.json and azuredeploy.parameters.j
 Allows a user to specify a name for the Resource Group, location (Azure region), a specific ARM template file and a specific parameters file (to accompany the ARM template).
 
 <p>
-Both scripts have optional parameters:
+<p>Both scripts have optional parameters:
 
 <i>[bool] -Complete $true</i>
 <p>Prints extra detail pertaining to the tasks and logs to the output file.
