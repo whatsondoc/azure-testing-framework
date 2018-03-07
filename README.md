@@ -4,8 +4,9 @@ Scripts for testing Azure services or deployments. The process, in short, is to 
 
 Logging is in place throughout to capture times taken to complete the different stages.
 
-The PowerShell scripts (.ps1) have different characteristics:
+_____________________
 
+The PowerShell scripts (.ps1) have different characteristics:
 
 :: selfcontained-vmss
 Allows a user to just run the script without any other parameters/options. A random string will be generated and used to name a Resouce Group & template deployment.
@@ -14,11 +15,12 @@ A default location is explicitly set in the script ('northcentralus'), but can b
 
 There is a dependency of having an azuredeploy.json and azuredeploy.parameters.json file in the working directory.
 
+<p>
 
 :: custom-vmss
 Allows a user to specify a name for the Resource Group, location (Azure region), a specific ARM template file and a specific parameters file (to accompany the ARM template).
 
-
+<p>
 Both scripts have optional parameters:
 
 [bool] -Complete $true
