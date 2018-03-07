@@ -22,7 +22,7 @@ Allows a user to specify a name for the Resource Group, location (Azure region),
 Both scripts have optional parameters:
 
 <i>[bool] -Complete $true</i>
-Prints extra detail pertaining to the tasks and logs to the output file.
+<p>Prints extra detail pertaining to the tasks and logs to the output file.
 
 <i>[bool] -Quiet $true</i>
-Suppresses output and limits to just the pertinent details (location, start time, [random string], time events).
+<p>Suppresses output and limits to just the pertinent details (location, start time, [random string], time events).
