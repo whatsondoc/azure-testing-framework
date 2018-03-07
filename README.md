@@ -6,7 +6,7 @@ Logging is in place throughout to capture times taken to complete the different 
 
 The PowerShell scripts (.ps1) have different characteristics:
 
-_____________________
+
 :: selfcontained-vmss
 Allows a user to just run the script without any other parameters/options. A random string will be generated and used to name a Resouce Group & template deployment.
 
@@ -14,7 +14,7 @@ A default location is explicitly set in the script ('northcentralus'), but can b
 
 There is a dependency of having an azuredeploy.json and azuredeploy.parameters.json file in the working directory.
 
-______________
+
 :: custom-vmss
 Allows a user to specify a name for the Resource Group, location (Azure region), a specific ARM template file and a specific parameters file (to accompany the ARM template).
 
