@@ -8,23 +8,21 @@ _____________________
 
 The PowerShell scripts (.ps1) have different characteristics:
 
-:: selfcontained-vmss
+<b>:: selfcontained-vmss</b>
 Allows a user to just run the script without any other parameters/options. A random string will be generated and used to name a Resouce Group & template deployment.
 
 A default location is explicitly set in the script ('northcentralus'), but can be set to any Azure region.
 
 There is a dependency of having an azuredeploy.json and azuredeploy.parameters.json file in the working directory.
 
-<p>
-
-:: custom-vmss
+<b>:: custom-vmss</b>
 Allows a user to specify a name for the Resource Group, location (Azure region), a specific ARM template file and a specific parameters file (to accompany the ARM template).
 
 <p>
 Both scripts have optional parameters:
 
-[bool] -Complete $true
+<i>[bool] -Complete $true</i>
 Prints extra detail pertaining to the tasks and logs to the output file.
 
-[bool] -Quiet $true
+<i>[bool] -Quiet $true</i>
 Suppresses output and limits to just the pertinent details (location, start time, [random string], time events).
