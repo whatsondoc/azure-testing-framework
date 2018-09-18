@@ -1,0 +1,30 @@
+{
+    "job": {
+        "type": "Microsoft.Batch/batchAccounts/jobs",
+        "properties": {
+            "id": "JOB_NAME_NULL",
+            "poolInfo": {
+                "poolId": "POOL_ID_NULL"
+            },
+            "taskFactory": {
+                "type": "parametricSweep",
+                "parameterSets": [
+                    {
+                        "start": 0,
+                        "end": TASK_NUM_NULL,
+                        "step": 1
+                    }
+                ],
+                "repeatTask": {
+                  "commandLine": "/bin/bash -c '/mnt/resource/batch/tasks/shared/performance_test.sh'"
+                },
+                "resourceFiles": [
+                    {
+                        "blobSource": "JOB_CFG_NULL",
+                        "filePath": "/mnt/resource/batch/tasks/shared/performance_test.sh"
+                    }
+                ]
+            }
+        }
+    }
+}
