@@ -1,0 +1,21 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmSku": {
+      "value": "<<_VM_SKU_>>"
+    },
+    "vmssName": {
+      "value": "<<_VMSS_name_>>"
+    },
+    "instanceCount": {
+      "value": <<_number_of_nodes_>>
+    },
+    "adminUsername": {
+      "value": "<<_admin_username_>>"
+    },
+    "adminPassword": {
+      "value": "<<_admin_password_>>"
+    }
+  }
+}
