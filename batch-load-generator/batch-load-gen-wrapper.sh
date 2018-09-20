@@ -21,15 +21,21 @@ rm ./BATCH-LOAD-GEN.FILE
 fi
 
 if [ ! -f batch.creds ]
-then echo -e "No batch.creds file detected in the current working directory - please ensure that the file exists and is named correctly.\n"
+then 
+    echo -e "No batch.creds file detected in the current working directory - please ensure that the file exists and is named correctly.\n"
+    exit 1
 fi
 
 if [ ! -f batch-client-job.json ]
-then echo -e "The Batch Client Job submission json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
+then 
+    echo -e "The Batch Client Job submission json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
+    exit 1
 }
 
 if [ ! -f batch-client-pool.json ]
-then echo -e "The Batch Client Pool json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
+then 
+    echo -e "The Batch Client Pool json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
+    exit 1
 }
 
 help() {
@@ -54,7 +60,7 @@ Such tests could include storage performance tests or saturating connection coun
     exit 1
 }
 
-testperms
+testsetup
 
 while getopts :j:p:t:n:w: option
 do 
