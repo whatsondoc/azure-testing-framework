@@ -9,15 +9,16 @@ echo -e "\n"
 read -p "Please ensure you have logged into the Azure CLI prior to running this script. Press 'Enter' to continue if so..."
 echo -e "\n"
 
-testsetup() {
+testsetup() 
+{
 if ! touch ./BATCH-LOAD-GEN.FILE 2&> /dev/null
 then	
-echo -e "\n\nFiles will be downloaded/created in this working directory as part of the script and are critical to its operation. 
+    echo -e "\n\nFiles will be downloaded/created in this working directory as part of the script and are critical to its operation. 
 
 However, we cannot write here --- please move to a directory where you have write privileges, and re-run this script.\n\n" 
-exit 1
+    exit 1
 else
-rm ./BATCH-LOAD-GEN.FILE
+    rm ./BATCH-LOAD-GEN.FILE
 fi
 
 if [ ! -f batch.creds ]
@@ -30,12 +31,13 @@ if [ ! -f batch-client-job.json ]
 then 
     echo -e "The Batch Client Job submission json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
     exit 1
-}
+fi
 
 if [ ! -f batch-client-pool.json ]
 then 
     echo -e "The Batch Client Pool json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
     exit 1
+fi
 }
 
 help() {
@@ -46,15 +48,14 @@ Such tests could include storage performance tests or saturating connection coun
 
 ::SYNTAX::
 
-    $ /path/to/batch-load-gen-wrapper.sh --job-id <JOB_NAME> --pool-id <POOL_ID> --tasks <NUMBER_OF_TASKS> --node-cfg <URL_OF_NODE_NODE_CFG> --job-cfg <URL_OF_JOB_NODE_CFG>
     $ /path/to/batch-load-gen-wrapper.sh -j <JOB_NAME> -p <POOL_ID> -t <NUMBER_OF_TASKS> -n <URL_OF_NODE_NODE_CFG> -w <URL_OF_JOB_NODE_CFG>
 
     $ /path/to/batch-load-gen-wrapper.sh \
-    --job SEQUENTIAL_READ \
-    --pool GLUSTER_FS_01 \
-    --tasks 39 \
-    --nodecfg http://aka.ms/glusterfs-nodesetup.sh
-    --jobcfg http://aka.ms/glusterfs-perftest.sh
+    -j SEQUENTIAL_READ \                        # Job name
+    -p GLUSTER_FS_01 \                          # Pool ID
+    -t 39 \                                     # Tasks
+    -n http://aka.ms/glusterfs-nodesetup.sh     # Node config
+    -w http://aka.ms/glusterfs-perftest.sh      # Job config
 \n\n"
 
     exit 1
@@ -83,18 +84,22 @@ BATCH_KEY=$(cat batch.creds | grep BATCH_KEY | awk '{print $2}')
 # Pool: Check to see whether a pool of the name ${POOL_ID} exists, and if not, create it
 if ! az batch pool list --account-name ${BATCH_ACCT} --account-endpoint ${BATCH_ENDPOINT} --account-key ${BATCH_KEY} | grep -i ${POOL_ID} > /dev/null
 then
-    sed -i "s/POOL_ID_NULL/${POOL_ID}/g" batch-client-pool.json
-    sed -i "s/NODE_CFG_NULL/${NODE_CFG}/g" batch-client-pool.json
+    cp batch-client-pool.json ${POOL_ID}-batch-client-pool.json
+
+    sed -i "s#POOL_ID_NULL#${POOL_ID}#g" ${POOL_ID}-batch-client-pool.json
+    sed -i "s#NODE_CFG_NULL#${NODE_CFG}#g" ${POOL_ID}-batch-client-pool.json
     
-    az batch pool create --account-name ${BATCH_ACCT} --account-endpoint ${BATCH_ENDPOINT} --account-key ${BATCH_KEY} --template batch-client-pool.json
+    az batch pool create --account-name ${BATCH_ACCT} --account-endpoint ${BATCH_ENDPOINT} --account-key ${BATCH_KEY} --template ${POOL_ID}-batch-client-pool.json
 fi
 
 sleep 30
 
 # Job: Submission
-sed -i "s/POOL_ID_NULL/${POOL_ID}/g" batch-client-job.json
-sed -i "s/JOB_NAME_NULL/${JOB_NAME}/g" batch-client-job.json
-sed -i "s/TASK_NUM_NULL/${TASK_NUM}/g" batch-client-job.json
-sed -i "s/JOB_CFG_NULL/${JOB_CFG}/g" batch-client-job.json
+cp batch-client-job.json ${JOB_NAME}-batch-client-pool.json
 
-az batch job create --account-name ${BATCH_ACCT} --account-endpoint ${BATCH_ENDPOINT} --account-key ${BATCH_KEY} --template batch-client-job.json
+sed -i "s#POOL_ID_NULL#${POOL_ID}#g" ${JOB_NAME}-batch-client-job.json
+sed -i "s#JOB_NAME_NULL#${JOB_NAME}#g" ${JOB_NAME}-batch-client-job.json
+sed -i "s#TASK_NUM_NULL#${TASK_NUM}#g" ${JOB_NAME}-batch-client-job.json
+sed -i "s#JOB_CFG_NULL#${JOB_CFG}#g" ${JOB_NAME}-batch-client-job.json
+
+az batch job create --account-name ${BATCH_ACCT} --account-endpoint ${BATCH_ENDPOINT} --account-key ${BATCH_KEY} --template ${JOB_NAME}-batch-client-job.json
