@@ -16,14 +16,15 @@
                     }
                 ],
                 "repeatTask": {
-                  "commandLine": "/bin/bash -c '/mnt/resource/batch/tasks/shared/performance_test.sh'"
-                },
-                "resourceFiles": [
-                    {
+                    "commandLine": "/bin/bash -c '/mnt/resource/batch/tasks/shared/performance_test.sh'",
+                    "resourceFiles": [
+                        {
                         "blobSource": "JOB_CFG_NULL",
-                        "filePath": "/mnt/resource/batch/tasks/shared/performance_test.sh"
-                    }
-                ]
+                        "filePath": "/mnt/resource/batch/tasks/shared/performance_test.sh",
+                        "fileMode": "777"
+                        }
+                    ]
+                }
             }
         }
     }

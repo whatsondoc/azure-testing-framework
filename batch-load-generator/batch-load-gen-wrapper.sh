@@ -95,7 +95,7 @@ fi
 sleep 30
 
 # Job: Submission
-cp batch-client-job.json ${JOB_NAME}-batch-client-pool.json
+cp batch-client-job.json ${JOB_NAME}-batch-client-job.json
 
 sed -i "s#POOL_ID_NULL#${POOL_ID}#g" ${JOB_NAME}-batch-client-job.json
 sed -i "s#JOB_NAME_NULL#${JOB_NAME}#g" ${JOB_NAME}-batch-client-job.json

@@ -54,17 +54,16 @@
                     "sku": "7.5",
                     "version": "latest"
                 },
-                "nodeAgentSKUId": "batch.node.centos7"
+                "nodeAgentSKUId": "batch.node.centos 7"
             },
             "vmSize": "[parameters('vmSize')]",
-            "targetDedicatedNodes": "0",
-            "targetLowPriorityNodes": "0",
-	          "nodeFillType": "spread",
+	        "taskSchedulingPolicy": {
+                "nodeFillType": "spread"
+                },
             "enableAutoScale": true,
             "autoScaleFormula": "[parameters('autoScaleFormula')]",
             "autoScaleEvaluationInterval": "PT5M",
             "maxTasksPerNode": "[parameters('maxTasksPerNode')]",
-	          "interNodeCommunication": false,
             "startTask": {
                 "commandLine": "[parameters('startTask')]",
                 "resourceFiles": [
@@ -74,14 +73,15 @@
                     "fileMode": "777"
                     }
                 ],
-        "userIdentity": {
-            "autoUser": {
-                "scope": "pool",
-                "elevationLevel": "admin"
-              }
-            },
-        "maxTaskRetryCount": 0,
-        "waitForSuccess": true
-        } 
+                "userIdentity": {
+                    "autoUser": {
+                        "scope": "pool",
+                        "elevationLevel": "admin"
+                    }
+                },
+                "maxTaskRetryCount": 0,
+                "waitForSuccess": true
+            } 
+        }
     }
 }
