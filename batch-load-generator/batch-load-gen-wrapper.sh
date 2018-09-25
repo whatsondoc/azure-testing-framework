@@ -91,7 +91,7 @@ done
 TASK_NUM=$(( $TASK_NUM - 1 ))
 
 # Collecting Batch credentials from the accompanying credentials file
-if cat batch.creds | grep "ACCOUNT" > /dev/null ]
+if cat batch.creds | grep "ACCOUNT" > /dev/null
 then 
     echo -e "You need to update the batch.creds file to include your specific Batch account details. \n\nExiting...\n"
     exit 1
