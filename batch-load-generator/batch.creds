@@ -1,3 +1,3 @@
-BATCH_ACCT srwestus2batch
-BATCH_ENDPOINT https://srwestus2batch.westus2.batch.azure.com
-BATCH_KEY UMp1Zptpc2m8PT/rBitUSvTPO8Gw9gxhhAgq+aKTKXd4vRj4in0jBiQdbqqJD3KqNHUDIIrdr5HPi/P5qMjOkQ==
+BATCH_ACCT <<ACCOUNT_NAME>>
+BATCH_ENDPOINT <<ACCOUNT_URL>>
+BATCH_KEY <<ACCOUNT_KEY>>
