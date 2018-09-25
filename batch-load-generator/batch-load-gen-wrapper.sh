@@ -88,8 +88,6 @@ in
 esac
 done
 
-TASK_NUM=$(( $TASK_NUM - 1 ))
-
 # Collecting Batch credentials from the accompanying credentials file
 if cat batch.creds | grep "ACCOUNT" > /dev/null
 then 
@@ -121,6 +119,8 @@ sleep 30
 
 # Job: Submission
 cp batch-client-job.json ${JOB_NAME}-batch-client-job.json
+
+TASK_NUM=$(( $TASK_NUM - 1 ))
 
 sed -i "s#POOL_ID_NULL#${POOL_ID}#g" ${JOB_NAME}-batch-client-job.json
 sed -i "s#JOB_NAME_NULL#${JOB_NAME}#g" ${JOB_NAME}-batch-client-job.json
