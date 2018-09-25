@@ -88,6 +88,8 @@ in
 esac
 done
 
+TASK_NUM=$(( $TASK_NUM - 1 ))
+
 # Collecting Batch credentials from the accompanying credentials file
 if cat batch.creds | grep "ACCOUNT" > /dev/null ]
 then 
