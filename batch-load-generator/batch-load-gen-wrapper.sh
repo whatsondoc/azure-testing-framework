@@ -9,7 +9,7 @@ testsetup()
 {
 if ! touch ./BATCH-LOAD-GEN.FILE 2&> /dev/null
 then	
-    echo -e "\n\nFiles will be modified in this working directory as part of the script and are critical to its operation. 
+    echo -e "\n\nFiles will be created in this working directory as part of the script and are critical to its operation. 
 
 However, we cannot write here --- please move to a directory where you have write privileges, and re-run this script.\n\n" 
     exit 1
@@ -19,20 +19,31 @@ fi
 
 if [ ! -f azure.config ]
 then 
-    echo -e "No azure.config file detected in the current working directory - please ensure that the file exists and is named correctly.\n"
+    echo -e "No \"azure.config\" file detected in the current working directory - please ensure that the file exists and is named correctly.\n\n"
     exit 1
 fi
 
 if [ ! -f batch-client-job.json ]
 then 
-    echo -e "The Batch Client Job submission json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
+    echo -e "The \"batch-client-job.json\" template is not in the current working directory - please ensure that the file exists and is named correctly.\n\n"
     exit 1
+else
+    if [ ! -r batch-client-job.json ]
+    then
+        echo -e "The file \"batch-client-job.json\" is not writeable for the current user. This framework will create a copy of the file to use for the purposes of this run.\n\n"
+        exit 1
+    fi
 fi
 
 if [ ! -f batch-client-pool.json ]
 then 
-    echo -e "The Batch Client Pool json template is not in the current working directory - please ensure that the file exists and is named correctly.\n"
+    echo -e "The \"batch-client-pool.json\" template is not in the current working directory - please ensure that the file exists and is named correctly.\n\n"
     exit 1
+    if [ ! -r batch-client-job.json ]
+    then
+        echo -e "The file \"batch-client-pool.json\" is not writeable for the current user. This framework will create a copy of the file to use for the purposes of this run.\n\n"
+        exit 1
+    fi
 fi
 }
 
@@ -108,7 +119,7 @@ VNET_NAME=$(cat azure.config | grep VNET_NAME | awk '{print $2}')
 VNET_SUBNET=$(cat azure.config | grep VNET_SUBNET | awk '{print $2}')
 VNET_RG=$(cat azure.config | grep VNET_RG | awk '{print $2}')
 
-SUBNET_ID=$(az network vnet subnet show --resource-group ${VNET_RG} --vnet-name ${VNET_NAME} --name ${VNET_SUBNET} -o tsv | awk '{print $3}')
+SUBNET_ID=$(az network vnet subnet show --resource-group ${VNET_RG} --vnet-name ${VNET_NAME} --name ${VNET_SUBNET} -o tsv | awk '{print $5}')
 if [ -z ${SUBNET_ID} ]
 then
     echo -e "Variable SUBNET_ID could not be set - exiting...\n\n"

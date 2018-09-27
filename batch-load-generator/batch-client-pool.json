@@ -36,10 +36,8 @@
                 "nodeAgentSKUId": "batch.node.centos 7"
             },
             "vmSize": "[parameters('vmSize')]",
-            "networkconfiguration": {
-                "subnet": {
-                  "id": "SUBNET_ID_NULL"
-                }
+            "networkConfiguration": {
+                "subnetId": "SUBNET_ID_NULL"
               },
 	        "taskSchedulingPolicy": {
                 "nodeFillType": "spread"
