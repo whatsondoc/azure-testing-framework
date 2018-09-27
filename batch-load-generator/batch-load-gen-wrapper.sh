@@ -53,7 +53,8 @@ Such tests could include storage performance tests or saturating connection coun
 \t-n http://aka.ms/glusterfs-nodesetup.sh \t\t# Node config
 \t-w http://aka.ms/glusterfs-perftest.sh \t\t# Job config
 
-The default VM size is Standard_D1_v2. If you want to modify the size of a VM on which these tasks run, utilise the '-s' switch and specify a valid VM type. For example:
+The default VM size is Standard_D1_v2. If you want to modify the size of a VM on which these tasks run (i.e. to take advantage of program-level parallelisation), utilise 
+the '-s' switch and specify a valid VM type. For example:
 
 \t$ /path/to/batch-load-gen-wrapper.sh \
 \t-j SEQUENTIAL_READ \ \t\t# Job name
@@ -108,7 +109,7 @@ VNET_SUBNET=$(cat azure.config | grep VNET_SUBNET | awk '{print $2}')
 VNET_RG=$(cat azure.config | grep VNET_RG | awk '{print $2}')
 
 SUBNET_ID=$(az network vnet subnet show --resource-group ${VNET_RG} --vnet-name ${VNET_NAME} --name ${VNET_SUBNET} -o tsv | awk '{print $3}')
-if [ -z $SUBNET_ID ]
+if [ -z ${SUBNET_ID} ]
 then
     echo -e "Variable SUBNET_ID could not be set - exiting...\n\n"
     exit 1
@@ -128,7 +129,7 @@ then
     sed -i "s#TASK_NUM_NULL#${TASK_NUM}#g" ${POOL_ID}-batch-client-pool.json
     sed -i "s#SUBNET_ID_NULL#${SUBNET_ID}#g" ${POOL_ID}-batch-client-pool.json
 
-    if [ ! -z $VM_SIZE ]
+    if [ ! -z ${VM_SIZE} ]
     then
         sed -i "s#Standard_D1_v2#${VM_SIZE}#g" ${POOL_ID}-batch-client-pool.json
     fi
@@ -147,7 +148,7 @@ sleep 30
 # Job: Submission
 cp batch-client-job.json ${JOB_NAME}-batch-client-job.json
 
-TASK_NUM=$(( $TASK_NUM - 1 ))
+TASK_NUM=$(( ${TASK_NUM} - 1 ))
 
 sed -i "s#POOL_ID_NULL#${POOL_ID}#g" ${JOB_NAME}-batch-client-job.json
 sed -i "s#JOB_NAME_NULL#${JOB_NAME}#g" ${JOB_NAME}-batch-client-job.json
